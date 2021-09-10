@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOCATION MAP</title>
+    <link rel="stylesheet" href="css101.css">
+</head>
+
+<!--------หน้าแรก ---------->
+
+<body style="text-align: center;">
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <h1 id="fontColor1">สามารถตรวจสอบ Location ของท่านได้</h1>
+    <h2 id="fontColor2">กรุณากดคำว่า "SHOW" เพื่อใช้งาน</h2>
+    <br>
+    <br>
+    <button class="btn-1" id="show" onclick="show_dialog()">SHOW</button>
+    <br>
+    <br>
+    <!--------dialog ---------->
+    <dialog id=myDialog>
+        <form>
+            <div>
+                <label>Longitude</label>
+                <input type=text name="firstname" id="firstname" required>
+                <br>
+            </div>
+            <div>
+                <br>
+                <label>Latitude</label>
+                <input type=text name="lastname" id="lastname" required>
+            </div>
+            <br>
+
+        </form>
+
+        <script>
+            function show_dialog() {
+                var showdialog = document.getElementById("myDialog").showModal();
+            }
+            function close_dialog() {
+                var closedialog = document.getElementById("myDialog").close();
+            }
+        </script>
+        <!----------Map----------->
+
+        <p id="demo"></p>
+        <button onclick="getLocation(),clickCounter()"> search </button>
+        <button onclick="delUsername()"> reset </button>
+        <div id="mapholder"></div>
+        <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAoKoNVKdXRrp8YDgara5W1m2nfTU1dG5g&callback=initMap"
+            type="text/javascript"></script>
+        <script>
+            var x = document.getElementById("demo");
+            function getLocation() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(showPosition, showError);
+                } else {
+                    x.innerHTML = "Geolocation is not supported by this browser.";
+                }
+            }
+
+            function showPosition(position) {
+                lat = position.coords.latitude;
+                lon = position.coords.longitude;
+                latlon = new google.maps.LatLng(lat, lon)
+                mapholder = document.getElementById('mapholder')
+                mapholder.style.height = '350px';
+                mapholder.style.width = '500px';
+
+                var myOptions = {
+                    center: latlon,
+                    zoom: 16,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    mapTypeControl: false,
+                    navigationControlOptions: { style: google.maps.NavigationControlStyle.SMALL }
+                }
+
+                var map = new google.maps.Map(document.getElementById("mapholder"), myOptions);
+                var marker = new google.maps.Marker({ position: latlon, map: map, title: "You are here!" });
+            }
+
+            function showError(error) {
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        x.innerHTML = "User denied the request for Geolocation."
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        x.innerHTML = "Location information is unavailable."
+                        break;
+                    case error.TIMEOUT:
+                        x.innerHTML = "The request to get user location timed out."
+                        break;
+                    case error.UNKNOWN_ERROR:
+                        x.innerHTML = "An unknown error occurred."
+                        break;
+                }
+            }
+        </script>
+        <!----------Localstorage----------->
+        <script>
+            function clickCounter() {
+                if (typeof (Storage) !== "undefined") {
+                    if (localStorage.clickcount) {
+                        localStorage.clickcount = Number(localStorage.clickcount) + 1;
+                    } else {
+                        localStorage.clickcount = 1;
+                    }
+                    document.getElementById("result").innerHTML = "<h1>You have clicked the button " + localStorage.clickcount + " time(s).";
+                } else {
+                    document.getElementById("result").innerHTML = "Sorry, your browser does not support web storage...";
+                }
+            }
+        </script>
+        </head>
+        <br>
+        <div id="result"></div>
+
+        <script>
+            function delUsername() {
+                localStorage.removeItem("clickcount");
+            }
+        </script>
+
+
+    </dialog>
+</body>
+
+</html>
